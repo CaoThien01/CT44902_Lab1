@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { application } = require("express");
+const { BadRequestError, errorHandler} = require("./app/errors");
 
 const app = express();
 
@@ -13,5 +13,24 @@ app.get("/", (req,res) => {
         message: "Welcome to contact book application."
     });
 });
+
+const setupContactRoutes = require("./app/routes/contact.routes");
+
+setupContactRoutes(app);
+
+// handle 404 response
+app.use((req, res, next) => {
+    next (new BadRequestError(404, "Resource not found"));
+});
+
+app.use((err, req, res, next) =>{
+    errorHandler.handleError(error, res);
+});
+
+
+
+
+
+
 
 module.exports = app;
